@@ -1,0 +1,160 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  System        : 
+%  Module        : 
+%  Object Name   : $RCSfile$
+%  Revision      : $Revision$
+%  Date          : $Date$
+%  Author        : $Author$
+%  Created By    : Robert Heller
+%  Created       : Wed Apr 2 13:48:24 2025
+%  Last Modified : <250402.1552>
+%
+%  Description 
+%
+%  Notes
+%
+%  History
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%    Copyright (C) 2025  Robert Heller D/B/A Deepwoods Software
+%			51 Locke Hill Road
+%			Wendell, MA 01379-9728
+%
+%    This program is free software; you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation; either version 2 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program; if not, write to the Free Software
+%    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%
+% 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{AnnArbor}
+}
+\usepackage[english]{babel}
+
+\usepackage[latin1]{inputenc}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\usepackage{listings}
+\lstset{language=Python,basicstyle=\footnotesize}
+\usepackage{graphicx}
+\title{Light up Embroidery Using a Gemma M0 and NeoPixels}
+\author{Robert Heller}
+\date{LaunchSpace}
+
+%\subject{Video Presentation}
+
+\usepackage{../rphpartpage}
+\setbeamertemplate{part page}[video]
+\AtBeginPart{\frame{\partpage}}
+\begin{document}
+
+\frame{\titlepage}
+
+\part{Introduction}
+
+\section{Who I am}
+\begin{frame}[fragile]{Who I am}
+My name is Robert Heller.  I have been writing computer programs for over 50
+years.
+\end{frame}
+\section{What we will be making}
+\begin{frame}[fragile]{What we will be making}
+We will be creating a light up embroidering piece.  We will use a small, 
+sewable microprocessor with some sewable lighting devices.
+\end{frame}
+\part{Materials and Tools}
+
+\section{The electronics}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+
+\subsection{The microprocessor: Gemma M0}
+\begin{frame}[fragile]{The microprocessor: Gemma M0}
+\includegraphics[height=3in]{gemma_guide.jpg}
+\end{frame}
+\begin{frame}[fragile]{Gemma M0 pins}
+\includegraphics[width=5in]{adafruit_gemma_Adafruit_GEMMA_M0_pinout.png}
+\end{frame}
+\subsection{The NeoPixel}
+\begin{frame}[fragile]{The NeoPixel}
+\includegraphics[height=3in]{FloraNeoPixel.jpg}
+\end{frame}
+\subsection{Snaps}
+\begin{frame}[fragile]{Snaps}
+\includegraphics[height=3in]{snap.jpg}
+\end{frame}
+\subsection{Counductive Thread}
+\begin{frame}[fragile]{Counductive Thread}
+\includegraphics[height=3in]{counductivethread.jpg}
+\end{frame}
+\subsection{Battery Holder and extension cable}
+\begin{frame}[fragile]{Battery Holder}
+\includegraphics[height=3in]{BatteryHolder.jpg}
+\end{frame}
+\begin{frame}[fragile]{Extension Cable}
+\includegraphics[height=3in]{ExtenssionCable.jpg}
+\end{frame}
+\subsection{USB Cable}
+\begin{frame}[fragile]{USB Cable}
+\includegraphics[width=4in]{USBCable.jpg}
+\end{frame}
+\section{Other materials}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\subsection{Embroidery Thread}
+\begin{frame}[fragile]{Embroidery Thread}
+\end{frame}
+\subsection{Fabric Scraps}
+\begin{frame}[fragile]{Fabric Scraps}
+\end{frame}
+\subsection{Clear Nail Polish}
+\begin{frame}[fragile]{Clear Nail Polish}
+\end{frame}
+\section{The Tools}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\subsection{Needles}
+\begin{frame}[fragile]{Needles}
+\end{frame}
+\subsection{Scissors}
+\begin{frame}[fragile]{Scissors}
+\end{frame}
+\subsection{Embroidery hoop}
+\begin{frame}[fragile]{Embroidery hoop}
+\end{frame}
+\subsection{Fabric markers and tailer's chalk}
+\begin{frame}[fragile]{Fabric markers and tailer's chalk}
+\end{frame}
+\subsection{Paper and pencils}
+\begin{frame}[fragile]{Paper and pencils}
+\end{frame}
+\part{Design the Embroidery}
+\section{Where to place the Gemma M0} 
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\section{Placing the NeoPixels}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\section{Placing a switch using a snap}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\part{Sewing with counductive thread}
+\section{''Wiring'' the circuit with conductive thread}
+\frame{\tableofcontents[hideothersubsections,sectionstyle=show/hide]}
+\part{Writing the CircuitPython code}
+
+\end{document}
+
