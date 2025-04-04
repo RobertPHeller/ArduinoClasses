@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Wed Apr 2 14:10:16 2025
-#  Last Modified : <250402.1432>
+#  Last Modified : <250404.1247>
 #
 #  Description	
 #
@@ -45,10 +45,16 @@
 
 all: ClassSlides.pdf
 
-ClassSlides.pdf: ClassSlides.tex ../rphpartpage.sty
+ClassSlides.pdf: ClassSlides.tex ../rphpartpage.sty ClassSlides.d
 	-rm ClassSlides.pdf *.toc *.snm *.out *.nav *.aux *.log
 	pdflatex ClassSlides.tex
 	pdflatex ClassSlides.tex
 	pdflatex ClassSlides.tex
-	pdflatex ClassSlides.tex
-	pdflatex ClassSlides.tex
+
+
+ClassSlides.d: ImageDeps.tcl ClassSlides.tex 
+	echo "ClassSlides.pdf: \\" > ClassSlides.d
+	tclsh ImageDeps.tcl ClassSlides.tex >> ClassSlides.d
+	echo "" >> ClassSlides.d
+	
+-include ClassSlides.d
