@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Wed Apr 2 14:10:16 2025
-#  Last Modified : <250404.1247>
+#  Last Modified : <250407.0828>
 #
 #  Description	
 #
@@ -43,10 +43,10 @@
 ##############################################################################
 
 
-all: ClassSlides.pdf
+all: ClassSlides.pdf ClassNotes.pdf
 
 ClassSlides.pdf: ClassSlides.tex ../rphpartpage.sty ClassSlides.d
-	-rm ClassSlides.pdf *.toc *.snm *.out *.nav *.aux *.log
+	-rm -f ClassSlides.pdf ClassSlides.toc ClassSlides.snm ClassSlides.out ClassSlides.nav ClassSlides.aux ClassSlides.log
 	pdflatex ClassSlides.tex
 	pdflatex ClassSlides.tex
 	pdflatex ClassSlides.tex
@@ -58,3 +58,17 @@ ClassSlides.d: ImageDeps.tcl ClassSlides.tex
 	echo "" >> ClassSlides.d
 	
 -include ClassSlides.d
+
+ClassNotes.pdf: ClassNotes.tex ClassNotes.d
+	-rm -f ClassNotes.pdf ClassNotes.toc ClassNotes.aux ClassNotes.log
+	pdflatex ClassNotes.tex
+	pdflatex ClassNotes.tex
+	pdflatex ClassNotes.tex
+	pdflatex ClassNotes.tex
+
+ClassNotes.d: ImageDeps.tcl ClassNotes.tex
+	echo "ClassNotes.pdf: \\" > ClassNotes.d
+	tclsh ImageDeps.tcl ClassNotes.tex >> ClassNotes.d
+	echo "" >> ClassNotes.d
+	
+-include ClassNotes.d
