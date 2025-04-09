@@ -8,7 +8,7 @@
 %  Author        : $Author$
 %  Created By    : Robert Heller
 %  Created       : Mon Apr 7 08:03:44 2025
-%  Last Modified : <250409.1118>
+%  Last Modified : <250409.1441>
 %
 %  Description 
 %
@@ -461,6 +461,53 @@ Nothing will be connected to the last NeoPixel's out pointing arrow pad.
 \end{centering}\end{figure}
 \clearpage
 \part{Writing the CircuitPython code}
-\lstinputlisting{RailroadCrossing.py}
+\lstinputlisting[numbers=left,caption={Python Code For Railroad Crossing Shirt}]{RailroadCrossing.py}
+This is the code for my Railroad Crossing Shirt, which uses two NeoPixels for 
+the crossing lights.  When the train embroideried flap is up and snapped in 
+place, the NeoPixels alternitively blink in red, just like the lights at a 
+railroad crossing.  When the flap is unsnapped and down the lights stay off.
+\section{Description of the code}
+
+The code is broken up into sections, with a blank line between each section.
+Each section starts with a comment line. This is a line starting with a hash
+charcter (\texttt{\#}). These lines are ignored by the Python processor -- they
+are meant for people reading the code to get a bettering understanding of what
+the code is meant to do.
+
+The first part of the code (lines 1-5) load in library code, specificly:
+\begin{enumerate}
+\item The \texttt{board} module defines constants relating to the specific 
+board.
+\item The \texttt{digitalio} module defines classes, functions, and constants 
+relating to basic digital I/O functions.
+\item The \texttt{neopixel} module defines classes, functions, and constants 
+supporting the use of NeoPixels.
+\item The \texttt{time} module defines classes, functions, and constants 
+providing time related functions.
+\end{enumerate}
+
+The next section, lines 7-10, define the NeoPixel strip: two NeoPixels using 
+\texttt{D1} as the data line.
+
+Then comes the code, lines 12-16, that defines the snap switch on \texttt{D2}.
+
+Next, in lines 18-19 the LitPixel variable is initialized to zero. This
+variable will tell us which NepPixel to light up each time through the main
+loop.
+
+Finally, in lines 21-35 is the main loop. This is a ``forever'' loop, since
+\texttt{True} is always true. The code in the body of the loop, lines 23-35
+are executed repeatedly so long as power is applied.
+
+The loop body starts but turning all of the pixels in the pixel buffer off
+(line 24). Then the snap switch is tested, if the snap switch is closed
+(tested in line 26). If the switch is closed, the pixel indexed as
+\texttt{LitPixel} is set to full red, then the \texttt{LitPixel} is switched
+to the other pixel. One is added and the modulus (the remainder) of the number
+of pixels (\texttt{NUMPIXELS}) is computed, in line 31. Then whether the
+pixel was set or not, the pixel buffer is sent to the pixels, in line 33, 
+Finally the program ``sleeps'' for 1 second (line 35).
+
+
 \part{Installing the Battery}
 \end{document}
