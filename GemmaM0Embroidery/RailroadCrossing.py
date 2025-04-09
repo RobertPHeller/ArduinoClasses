@@ -24,7 +24,7 @@ while True:
     pixels.fill((0, 0, 0))
     # is snap closed?
     if not Snap.value:
-        # Snap closed: train comming, start / continue flashing
+        # Snap closed: train coming, start / continue flashing
         # turn on the current pixel to full red
         pixels[LitPixel] = (255, 0, 0)
         # Set up for next time: select the other pixel

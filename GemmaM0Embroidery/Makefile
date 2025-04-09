@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Wed Apr 2 14:10:16 2025
-#  Last Modified : <250407.0828>
+#  Last Modified : <250409.1506>
 #
 #  Description	
 #
@@ -45,7 +45,7 @@
 
 all: ClassSlides.pdf ClassNotes.pdf
 
-ClassSlides.pdf: ClassSlides.tex ../rphpartpage.sty ClassSlides.d
+ClassSlides.pdf: ClassSlides.tex ../rphpartpage.sty ClassSlides.d RailroadCrossing.py
 	-rm -f ClassSlides.pdf ClassSlides.toc ClassSlides.snm ClassSlides.out ClassSlides.nav ClassSlides.aux ClassSlides.log
 	pdflatex ClassSlides.tex
 	pdflatex ClassSlides.tex
@@ -59,7 +59,7 @@ ClassSlides.d: ImageDeps.tcl ClassSlides.tex
 	
 -include ClassSlides.d
 
-ClassNotes.pdf: ClassNotes.tex ClassNotes.d
+ClassNotes.pdf: ClassNotes.tex ClassNotes.d RailroadCrossing.py
 	-rm -f ClassNotes.pdf ClassNotes.toc ClassNotes.aux ClassNotes.log
 	pdflatex ClassNotes.tex
 	pdflatex ClassNotes.tex
