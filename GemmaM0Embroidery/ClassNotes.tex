@@ -8,7 +8,7 @@
 %  Author        : $Author$
 %  Created By    : Robert Heller
 %  Created       : Mon Apr 7 08:03:44 2025
-%  Last Modified : <250408.1147>
+%  Last Modified : <250409.1118>
 %
 %  Description 
 %
@@ -63,6 +63,8 @@
 \usepackage{pspicture}
 \fi
 \pagestyle{headings}
+\usepackage{listings}
+\lstset{language=Python,basicstyle=\footnotesize}
 \emergencystretch=50pt
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
@@ -411,6 +413,54 @@ stitch a ``wire'' from the out pointing arrow pad of the first NeoPixel to the
 in pointing arrow pad of the second NeoPixel. Repeat for all of the NeoPixels. 
 Nothing will be connected to the last NeoPixel's out pointing arrow pad.
 \subsection{Snap Switch}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-17.jpg}
+\caption{Use conductive thread to sew one half of a snap to a scrap of fabric}
+\label{fig:flora-angler-embroidery-17}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-18.jpg}
+\caption{Knot and seal the thread, leaving a long tail}
+\label{fig:flora-angler-embroidery-18}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-19.jpg}
+\caption{Fold the scrap in half, with the snap inside}
+\label{fig:flora-angler-embroidery-19}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-20.jpg}
+\caption{Sew the sides to form a flap}
+\label{fig:flora-angler-embroidery-20}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-21a.jpg}
+\caption{Sew the other half of the snap with conductive thread to the 
+\texttt{GND} pad}
+\label{fig:flora-angler-embroidery-21a}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-21.jpg}
+\caption{Trim the scrap and turn right side out}
+\label{fig:flora-angler-embroidery-21}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-22.jpg}
+\caption{Position the snap half on the flap with the half on the piece}
+\label{fig:flora-angler-embroidery-22}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-23.jpg}
+\caption{Use regular thread to secure the flap}
+\label{fig:flora-angler-embroidery-23}
+\end{centering}\end{figure}
+\begin{figure}[hbpt]\begin{centering}%
+\includegraphics[height=2.75in]{flora-angler-embroidery-24.jpg}
+\caption{Sew the tail of conductive thread from the flap to the \texttt{D2} pad}
+\label{fig:flora-angler-embroidery-24}
+\end{centering}\end{figure}
+\clearpage
 \part{Writing the CircuitPython code}
+\lstinputlisting{RailroadCrossing.py}
 \part{Installing the Battery}
 \end{document}
