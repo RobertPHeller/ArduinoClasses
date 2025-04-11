@@ -1,0 +1,277 @@
+#*****************************************************************************
+#
+#  System        : 
+#  Module        : 
+#  Object Name   : $RCSfile$
+#  Revision      : $Revision$
+#  Date          : $Date$
+#  Author        : $Author$
+#  Created By    : Robert Heller
+#  Created       : Thu Apr 10 19:57:34 2025
+#  Last Modified : <250410.2259>
+#
+#  Description	
+#
+#  Notes
+#
+#  History
+#	
+#*****************************************************************************
+#
+#    Copyright (C) 2025  Robert Heller D/B/A Deepwoods Software
+#			51 Locke Hill Road
+#			Wendell, MA 01379-9728
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# 
+#
+#*****************************************************************************
+
+
+import FreeCAD as App
+import Part, TechDraw, Mesh
+from FreeCAD import Base
+
+import os
+import sys
+sys.path.append(os.path.dirname(__file__))
+
+class SD45EmbroideryPattern(object):
+    __railheight = 6/12
+    __scale=0.6
+    __feet2mmscale=3.487
+    __totalLength=(65+(8/12))
+    __coupler=(25/12)
+    __frontTruckOffsetPlow=10+(9/12)
+    __rearTruckOffsetCoupler=12+(10/12)
+    __axleSpacing=6+(9.5/12)
+    __wheelDiameter=(40/12)
+    __sideFrameLength= 55/3.487
+    __sideFrameHeight= 10/3.487
+    __sideFrameYOffset= -3/3.487
+    __sideFrameXOffset= -4/3.487
+    __bolsterWidth = 40/3.487
+    __bolsterHeight = 6/3.487
+    __bolsterHOffset = 13.5/3.487
+    __frameHOffset = 17.5/3.487
+    __fuelTankStart= 80/3.487
+    __fuelTankLength = 70/3.487
+    __fuelTankOff = 2/3.487
+    __fuelTankHeight = 12/3.487
+    __airTankStart = 105/3.487
+    __airTankLength = 45/3.487
+    __airTankHeight = 5/3.487
+    __airTankOff    = 14/3.487
+    __frameLength   = 197/3.487
+    __frameHeight   = 3/3.487
+    __frameOff      = 19.5/3.487
+    __frameStart    = 16/3.487
+    __stepsOff      = 5/3.487
+    __stepsLength   = 8/3.487
+    __stepsHeight   = 17.5/3.487
+    __shortHoodStart = 4/3.487
+    __hoodOff        = 22.5/3.487
+    __shortHoodLength= 23/3.487
+    __shortHoodHeight= 20/3.487
+    __longHoodLength = 185/3.487
+    __longHoodHeight = 33/3.487
+    __thick=1
+    __Norm=Base.Vector(0,0,1)
+    __Black=(0, 0, 0)
+    __Silver=(180, 180, 180)
+    __Skyblue=(135/255, 206/255, 235/255)
+    def __init__(self):
+        self.rail = Part.makePlane(self.__totalLength*self.__feet2mmscale*self.__scale,\
+                                   self.__railheight*self.__feet2mmscale*self.__scale,\
+                                   Base.Vector(0,-self.__railheight*self.__feet2mmscale*self.__scale,0),\
+                                   self.__Norm)\
+            .extrude(Base.Vector(0,0,self.__thick))
+            
+        wRadius = ((self.__wheelDiameter*self.__feet2mmscale)*self.__scale)/2
+        plowOffset = self.__coupler
+        frontTruckCenter = plowOffset+self.__frontTruckOffsetPlow
+        firstAxle = frontTruckCenter-self.__axleSpacing
+        w1orig = Base.Vector(  firstAxle*self.__feet2mmscale*self.__scale,wRadius,0) 
+        self.wheel1 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                        w1orig,self.__Norm)))\
+             .extrude(Base.Vector(0,0,self.__thick))
+        w2orig=w1orig.add(Base.Vector(self.__axleSpacing*self.__feet2mmscale*self.__scale,0,0))
+                                      
+        self.wheel2 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                        w2orig,self.__Norm)))\
+             .extrude(Base.Vector(0,0,self.__thick))
+        self.wheel3 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                        w1orig.add(Base.Vector(2*self.__axleSpacing*self.__feet2mmscale*self.__scale,0,0)),self.__Norm)))\
+             .extrude(Base.Vector(0,0,self.__thick))
+        frontSForig=w1orig.add(Base.Vector(self.__sideFrameYOffset*self.__feet2mmscale*self.__scale,\
+                                           self.__sideFrameYOffset*self.__feet2mmscale*self.__scale,\
+                                           0))
+        self.frontSideFrame=Part.makePlane(self.__sideFrameLength*self.__feet2mmscale*self.__scale,\
+                                           self.__sideFrameHeight*self.__feet2mmscale*self.__scale,\
+                                           frontSForig,self.__Norm)\
+              .extrude(Base.Vector(0,0,self.__thick))
+        frontBolsterXFeet=frontTruckCenter-(self.__bolsterWidth/2)
+        bolsterYFeet=self.__bolsterHOffset
+        frontBolsterOrig = Base.Vector(frontBolsterXFeet*self.__feet2mmscale*self.__scale,\
+                                            bolsterYFeet*self.__feet2mmscale*self.__scale,\
+                                       0)
+        self.frontBolster=Part.makePlane(self.__bolsterWidth*self.__feet2mmscale*self.__scale,\
+                                         self.__bolsterHeight*self.__feet2mmscale*self.__scale,\
+                                         frontBolsterOrig,self.__Norm)\
+               .extrude(Base.Vector(0,0,self.__thick))
+        rearTruckCenter = self.__totalLength-self.__rearTruckOffsetCoupler
+        lastAxel = rearTruckCenter+self.__axleSpacing
+        w6orig = Base.Vector( lastAxel*self.__feet2mmscale*self.__scale,wRadius,0) 
+        self.wheel6 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                                w6orig,self.__Norm)))\
+              .extrude(Base.Vector(0,0,self.__thick))
+        w5orig=w6orig.add(Base.Vector(-(self.__axleSpacing*self.__feet2mmscale*self.__scale),0,0))
+        self.wheel5 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                                w5orig,self.__Norm)))\
+              .extrude(Base.Vector(0,0,self.__thick))
+        w4orig = w6orig.add(Base.Vector(-(2*self.__axleSpacing*self.__feet2mmscale*self.__scale),0,0))
+        self.wheel4 = Part.Face(Part.Wire(Part.makeCircle(wRadius,\
+                                w4orig,self.__Norm)))\
+              .extrude(Base.Vector(0,0,self.__thick))
+        rearSForig=w4orig.add(Base.Vector(self.__sideFrameYOffset*self.__feet2mmscale*self.__scale,\
+                                           self.__sideFrameYOffset*self.__feet2mmscale*self.__scale,\
+                                           0))
+        self.rearSideFrame=Part.makePlane(self.__sideFrameLength*self.__feet2mmscale*self.__scale,\
+                                           self.__sideFrameHeight*self.__feet2mmscale*self.__scale,\
+                                           rearSForig,self.__Norm)\
+              .extrude(Base.Vector(0,0,self.__thick))
+        rearBolsterXFeet=rearTruckCenter-(self.__bolsterWidth/2)
+        rearBolsterOrig = Base.Vector(rearBolsterXFeet*self.__feet2mmscale*self.__scale,\
+                                            bolsterYFeet*self.__feet2mmscale*self.__scale,\
+                                       0)
+        self.rearBolster=Part.makePlane(self.__bolsterWidth*self.__feet2mmscale*self.__scale,\
+                                         self.__bolsterHeight*self.__feet2mmscale*self.__scale,\
+                                         rearBolsterOrig,self.__Norm)\
+               .extrude(Base.Vector(0,0,self.__thick))
+        self.fuelTank = Part.makePlane(self.__fuelTankLength*self.__feet2mmscale*self.__scale,\
+                                       self.__fuelTankHeight*self.__feet2mmscale*self.__scale,\
+                                       Base.Vector(self.__fuelTankStart*self.__feet2mmscale*self.__scale,self.__fuelTankOff*self.__feet2mmscale*self.__scale,0),\
+                                       self.__Norm)\
+               .extrude(Base.Vector(0,0,self.__thick))
+        self.airTank = Part.makePlane(self.__airTankLength*self.__feet2mmscale*self.__scale,\
+                                      self.__airTankHeight*self.__feet2mmscale*self.__scale,\
+                                      Base.Vector(self.__airTankStart*self.__feet2mmscale*self.__scale,self.__airTankOff*self.__feet2mmscale*self.__scale,0),\
+                                      self.__Norm)\
+               .extrude(Base.Vector(0,0,self.__thick))
+        self.frame = Part.makePlane(self.__frameLength*self.__feet2mmscale*self.__scale,\
+                                    self.__frameHeight*self.__feet2mmscale*self.__scale,\
+                                    Base.Vector(self.__frameStart*self.__feet2mmscale*self.__scale,\
+                                                self.__frameOff*self.__feet2mmscale*self.__scale,\
+                                                0),self.__Norm)\
+               .extrude(Base.Vector(0,0,self.__thick))
+        frontSteps=Part.makePlane(self.__stepsLength*self.__feet2mmscale*self.__scale,\
+                                       self.__stepsHeight*self.__feet2mmscale*self.__scale,\
+                                       Base.Vector(self.__coupler*self.__feet2mmscale*self.__scale,\
+                                                   self.__stepsOff*self.__feet2mmscale*self.__scale,\
+                                                   0),self.__Norm)\
+                .extrude(Base.Vector(0,0,self.__thick))
+        rearSteps=Part.makePlane(self.__stepsLength*self.__feet2mmscale*self.__scale,\
+                                       self.__stepsHeight*self.__feet2mmscale*self.__scale,\
+                                       Base.Vector((self.__totalLength-self.__coupler-self.__stepsLength)*self.__feet2mmscale*self.__scale,\
+                                                   self.__stepsOff*self.__feet2mmscale*self.__scale,\
+                                                   0),self.__Norm)\
+                .extrude(Base.Vector(0,0,self.__thick))
+        shortHood=Part.makePlane(self.__shortHoodLength*self.__feet2mmscale*self.__scale,\
+                                      self.__shortHoodHeight*self.__feet2mmscale*self.__scale,\
+                                      Base.Vector((self.__shortHoodStart+self.__coupler)*self.__feet2mmscale*self.__scale,\
+                                                  self.__hoodOff*self.__feet2mmscale*self.__scale,\
+                                                  0),self.__Norm)\
+                .extrude(Base.Vector(0,0,self.__thick))
+        longHood=Part.makePlane(self.__longHoodLength*self.__feet2mmscale*self.__scale,\
+                                      self.__longHoodHeight*self.__feet2mmscale*self.__scale,\
+                                      Base.Vector((self.__shortHoodStart+self.__coupler+self.__shortHoodLength)*self.__feet2mmscale*self.__scale,\
+                                                  self.__hoodOff*self.__feet2mmscale*self.__scale,\
+                                                  0),self.__Norm)\
+                .extrude(Base.Vector(0,0,self.__thick))
+        self.body = longHood.fuse(shortHood).fuse(frontSteps).fuse(rearSteps)
+    def show(self,doc=None):
+        if doc==None:
+            doc = App.activeDocument()
+        obj = doc.addObject("Part::Feature","Rail")
+        obj.Shape = self.rail
+        obj.Label="Rail"
+        obj.ViewObject.ShapeColor=self.__Silver
+        obj = doc.addObject("Part::Feature","Wheel1")
+        obj.Shape = self.wheel1
+        obj.Label="Wheel1"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Wheel2")
+        obj.Shape = self.wheel2
+        obj.Label="Wheel2"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Wheel3")
+        obj.Shape = self.wheel3
+        obj.Label="Wheel3"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","FrontSideFrame")
+        obj.Shape = self.frontSideFrame
+        obj.Label="FrontSideFrame"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","FrontBolster")
+        obj.Shape = self.frontBolster
+        obj.Label="FrontBolster"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Wheel4")
+        obj.Shape = self.wheel4
+        obj.Label="Wheel4"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Wheel5")
+        obj.Shape = self.wheel5
+        obj.Label="Wheel5"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Wheel6")
+        obj.Shape = self.wheel6
+        obj.Label="Wheel6"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","RearSideFrame")
+        obj.Shape = self.rearSideFrame
+        obj.Label="RearSideFrame"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","RearBolster")
+        obj.Shape = self.rearBolster
+        obj.Label="RearBolster"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","FuelTank")
+        obj.Shape = self.fuelTank
+        obj.Label="FuelTank"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","AirTank")
+        obj.Shape = self.airTank
+        obj.Label="AirTank"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Frame")
+        obj.Shape = self.frame
+        obj.Label="Frame"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","MainBody")
+        obj.Shape = self.body
+        obj.Label="MainBody"
+        obj.ViewObject.ShapeColor=self.__Skyblue
+
+if __name__ == '__main__':
+    if "SD45EmbroideryPattern" in App.listDocuments().keys():
+        App.closeDocument("SD45EmbroideryPattern")
+    doc = App.newDocument("SD45EmbroideryPattern")
+    doc = App.activeDocument()
+    sd45 = SD45EmbroideryPattern()
+    sd45.show()
+    Gui.activeDocument().activeView().viewTop()
+    Gui.SendMsgToActiveView("ViewFit")
