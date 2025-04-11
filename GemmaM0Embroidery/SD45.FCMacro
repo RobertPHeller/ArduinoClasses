@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Thu Apr 10 19:57:34 2025
-#  Last Modified : <250410.2259>
+#  Last Modified : <250411.0943>
 #
 #  Description	
 #
@@ -42,12 +42,33 @@
 
 
 import FreeCAD as App
-import Part, TechDraw, Mesh
+import Part, TechDraw, TechDrawGui, Mesh
 from FreeCAD import Base
 
 import os
 import sys
 sys.path.append(os.path.dirname(__file__))
+import time
+import datetime
+from PySide.QtCore import QCoreApplication, QEventLoop, QTimer
+
+def execute(loop, ms):
+    timer = QTimer()
+    timer.setSingleShot(True)
+    
+    timer.timeout.connect(loop.quit)
+    timer.start(ms)
+    loop.exec_()
+
+def sleep(ms):
+    if not QCoreApplication.instance():
+        app = QCoreApplication([])
+        execute(app, ms)
+    else:
+        loop = QEventLoop()
+        execute(loop, ms)
+
+
 
 class SD45EmbroideryPattern(object):
     __railheight = 6/12
@@ -88,11 +109,26 @@ class SD45EmbroideryPattern(object):
     __shortHoodHeight= 20/3.487
     __longHoodLength = 185/3.487
     __longHoodHeight = 33/3.487
+    __cabOff         = 23/3.487
+    __batteryHeight  = 7/3.487
+    __cabLength      = 23/3.487
+    __cabHeight      = 25.5/3.487
+    __windowLength   =  10/3.487
+    __windowHeight   =   9/3.487
+    __windowXOff     =   6/3.487
+    __windowYOff     =   9/3.487
+    __numberFontPath = "/usr/share/fonts/truetype/freefont/"
+    __numberFontFile = "FreeSerifBold.ttf"
+    __number = "20"
+    __numberXOff =       7/3.487
+    __numberYOff =       2/3.487
+    __numberHeight =     3/3.487
     __thick=1
     __Norm=Base.Vector(0,0,1)
     __Black=(0, 0, 0)
     __Silver=(180, 180, 180)
     __Skyblue=(135/255, 206/255, 235/255)
+    __White=(1.0, 1.0, 1.0)
     def __init__(self):
         self.rail = Part.makePlane(self.__totalLength*self.__feet2mmscale*self.__scale,\
                                    self.__railheight*self.__feet2mmscale*self.__scale,\
@@ -202,6 +238,37 @@ class SD45EmbroideryPattern(object):
                                                   0),self.__Norm)\
                 .extrude(Base.Vector(0,0,self.__thick))
         self.body = longHood.fuse(shortHood).fuse(frontSteps).fuse(rearSteps)
+        self.cab = Part.makePlane(self.__cabLength*self.__feet2mmscale*self.__scale,\
+                                  self.__cabHeight*self.__feet2mmscale*self.__scale,\
+                                  Base.Vector((self.__shortHoodStart+self.__coupler+self.__shortHoodLength)*self.__feet2mmscale*self.__scale,\
+                                              (self.__hoodOff+self.__batteryHeight)*self.__feet2mmscale*self.__scale,\
+                                              0),self.__Norm)\
+                 .extrude(Base.Vector(0,0,self.__thick))
+        self.body = self.body.cut(self.cab)
+        self.window = Part.makePlane(self.__windowLength*self.__feet2mmscale*self.__scale,\
+                                     self.__windowHeight*self.__feet2mmscale*self.__scale,\
+                                     Base.Vector((self.__shortHoodStart+self.__coupler+self.__shortHoodLength+self.__windowXOff)*self.__feet2mmscale*self.__scale,\
+                                              (self.__hoodOff+self.__batteryHeight+self.__windowYOff)*self.__feet2mmscale*self.__scale,\
+                                              0),self.__Norm)\
+                 .extrude(Base.Vector(0,0,self.__thick))
+        numberWires = Part.makeWireString(self.__number,\
+                                                   self.__numberFontPath,\
+                                                   self.__numberFontFile,\
+                                                   self.__numberHeight*self.__feet2mmscale*self.__scale,\
+                                                   0.0)
+        d1 = Part.Face(numberWires[0])
+        d2 = Part.Face(numberWires[1])
+        self.number = d1.translate(Base.Vector((self.__shortHoodStart+self.__coupler+self.__shortHoodLength+self.__numberXOff)*self.__feet2mmscale*self.__scale,\
+                                              (self.__hoodOff+self.__batteryHeight+self.__numberYOff)*self.__feet2mmscale*self.__scale,\
+                                              0))\
+                         .extrude(Base.Vector(0,0,self.__thick))
+        self.number = self.number.fuse(\
+                    d2.translate(Base.Vector((self.__shortHoodStart+self.__coupler+self.__shortHoodLength+self.__numberXOff)*self.__feet2mmscale*self.__scale,\
+                                              (self.__hoodOff+self.__batteryHeight+self.__numberYOff)*self.__feet2mmscale*self.__scale,\
+                                              0))\
+                         .extrude(Base.Vector(0,0,self.__thick)))
+        self.cab = self.cab.cut(self.number)
+        self.showdoc = None
     def show(self,doc=None):
         if doc==None:
             doc = App.activeDocument()
@@ -265,6 +332,57 @@ class SD45EmbroideryPattern(object):
         obj.Shape = self.body
         obj.Label="MainBody"
         obj.ViewObject.ShapeColor=self.__Skyblue
+        obj = doc.addObject("Part::Feature","Cab")
+        obj.Shape = self.cab
+        obj.Label="Cab"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Window")
+        obj.Shape = self.window
+        obj.Label="Window"
+        obj.ViewObject.ShapeColor=self.__Black
+        obj = doc.addObject("Part::Feature","Number")
+        obj.Shape = self.number
+        obj.Label="Number"
+        obj.ViewObject.ShapeColor=self.__White
+        self.showdoc = doc
+    def techDrawPDF(self,doc=None,filename='SD45Pattern.pdf'):
+        if self.showdoc == None:
+            show(doc)
+        if doc==None:
+            doc = self.showdoc
+        template = doc.addObject('TechDraw::DrawSVGTemplate','USLetterTemplate')
+        template.Template = App.getResourceDir()+"Mod/TechDraw/Templates/USLetter_Landscape.svg"
+        edt = template.EditableTexts
+        edt['CompanyName'] = "Deepwoods Software"
+        edt['CompanyAddress'] = '51 Locke Hill Road, Wendell, MA 01379 USA' 
+        edt['DrawingTitle1']= 'SD45 Embroidery Pattern'
+        edt['DrawnBy'] = "Robert Heller"
+        edt['CheckedBy'] = ""
+        edt['Approved1'] = ""
+        edt['Approved2'] = ""
+        edt['Code'] = ""
+        edt['Weight'] = ''
+        edt['DrawingNumber'] = datetime.datetime.now().ctime()
+        edt['Revision'] = "A"
+        template.EditableTexts = edt
+        page1 = doc.addObject('TechDraw::DrawPage','SD45EmbroideryPattern')
+        page1.Template = template
+        edt = page1.Template.EditableTexts
+        edt['DrawingTitle3']= ""
+        edt['Scale'] = '1'
+        edt['Sheet'] = "Sheet 1 of 1"
+        page1.Template.EditableTexts = edt
+        page1.ViewObject.show()
+        pattern = doc.addObject('TechDraw::DrawViewPart','Pattern')
+        page1.addView(pattern)
+        pattern.Source = doc.findObjects(Type="Part::Feature")
+        pattern.Scale = 1
+        pattern.Direction=Base.Vector(0.0, 0.0, 1.0)
+        pattern.X = 140
+        pattern.Y = 100
+        doc.recompute()
+        sleep(500)
+        TechDrawGui.exportPageAsPdf(page1,filename)
 
 if __name__ == '__main__':
     if "SD45EmbroideryPattern" in App.listDocuments().keys():
@@ -275,3 +393,4 @@ if __name__ == '__main__':
     sd45.show()
     Gui.activeDocument().activeView().viewTop()
     Gui.SendMsgToActiveView("ViewFit")
+    sd45.techDrawPDF()
