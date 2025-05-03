@@ -1,0 +1,176 @@
+#*****************************************************************************
+#
+#  System        : 
+#  Module        : 
+#  Object Name   : $RCSfile$
+#  Revision      : $Revision$
+#  Date          : $Date$
+#  Author        : $Author$
+#  Created By    : Robert Heller
+#  Created       : Sat May 3 08:31:06 2025
+#  Last Modified : <250503.0929>
+#
+#  Description	
+#
+#  Notes
+#
+#  History
+#	
+#*****************************************************************************
+#
+#    Copyright (C) 2025  Robert Heller D/B/A Deepwoods Software
+#			51 Locke Hill Road
+#			Wendell, MA 01379-9728
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# 
+#
+#*****************************************************************************
+
+import FreeCAD as App
+import Part, TechDraw, TechDrawGui, Mesh
+from FreeCAD import Base
+
+import os
+import sys
+sys.path.append(os.path.dirname(__file__))
+import time
+import datetime
+from PySide.QtCore import QCoreApplication, QEventLoop, QTimer
+
+def execute(loop, ms):
+    timer = QTimer()
+    timer.setSingleShot(True)
+    
+    timer.timeout.connect(loop.quit)
+    timer.start(ms)
+    loop.exec_()
+
+def sleep(ms):
+    if not QCoreApplication.instance():
+        app = QCoreApplication([])
+        execute(app, ms)
+    else:
+        loop = QEventLoop()
+        execute(loop, ms)
+
+
+
+class BatteryPocketPattern(object):
+    __Height=77.6+2
+    __Width=48.3+2
+    __Thick=18+2
+    __SeamWidth=6
+    def __init__(self):
+        self.mainpanel=Part.makePlane(self.__Width,self.__Height,Base.Vector(0,0,0)).extrude(Base.Vector(0,0,1))
+        self.leftpanel=Part.makePlane(self.__Thick,self.__Height,Base.Vector(-self.__Thick,0,0)).extrude(Base.Vector(0,0,1))
+        self.rightpanel=Part.makePlane(self.__Thick,self.__Height,Base.Vector(self.__Width,0,0)).extrude(Base.Vector(0,0,1))
+        self.bottompanel=Part.makePlane(self.__Width,self.__Thick,Base.Vector(0,-self.__Thick,0)).extrude(Base.Vector(0,0,1))
+        self.toppanel=Part.makePlane(self.__Width,self.__Thick,Base.Vector(0,self.__Height,0)).extrude(Base.Vector(0,0,1))
+        self.leftseam=Part.makePlane(self.__SeamWidth,self.__Height,Base.Vector(-(self.__Thick+self.__SeamWidth),0,0)).extrude(Base.Vector(0,0,1))
+        self.rightseam=Part.makePlane(self.__SeamWidth,self.__Height,Base.Vector(self.__Width+self.__Thick,0,0)).extrude(Base.Vector(0,0,1))
+        self.bottomseam=Part.makePlane(self.__Width,self.__SeamWidth,Base.Vector(0,-(self.__Thick+self.__SeamWidth),0)).extrude(Base.Vector(0,0,1))
+        self.topsnaps=Part.makePlane(self.__Width,self.__SeamWidth*2,Base.Vector(0,(self.__Height+self.__Thick),0)).extrude(Base.Vector(0,0,1))
+    def show(self,doc=None):
+        if doc==None:
+            doc = App.activeDocument()
+        obj = doc.addObject("Part::Feature","main")
+        obj.Shape = self.mainpanel
+        obj.Label="main"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","left")
+        obj.Shape = self.leftpanel
+        obj.Label="left"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","right")
+        obj.Shape = self.rightpanel
+        obj.Label="right"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","bottom")
+        obj.Shape = self.bottompanel
+        obj.Label="bottom"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","top")
+        obj.Shape = self.toppanel
+        obj.Label="top"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","leftseam")
+        obj.Shape = self.leftseam
+        obj.Label="leftseam"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","rightseam")
+        obj.Shape = self.rightseam
+        obj.Label="rightseam"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","bottomseam")
+        obj.Shape = self.bottomseam
+        obj.Label="bottomseam"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        obj = doc.addObject("Part::Feature","topsnaps")
+        obj.Shape = self.topsnaps
+        obj.Label="topsnaps"
+        obj.ViewObject.ShapeColor=(1.0, 1.0, 1.0)
+        self.showdoc = doc
+    def techDrawPDF(self,doc=None,filename='BatteryPocketPattern.pdf'):
+        if self.showdoc == None:
+            show(doc)
+        if doc==None:
+            doc = self.showdoc
+        template = doc.addObject('TechDraw::DrawSVGTemplate','USLetterTemplate')
+        template.Template = App.getResourceDir()+"Mod/TechDraw/Templates/USLetter_Landscape.svg"
+        edt = template.EditableTexts
+        edt['CompanyName'] = "Deepwoods Software"
+        edt['CompanyAddress'] = '51 Locke Hill Road, Wendell, MA 01379 USA' 
+        edt['DrawingTitle1']= 'Battery Pocket Pattern'
+        edt['DrawnBy'] = "Robert Heller"
+        edt['CheckedBy'] = ""
+        edt['Approved1'] = ""
+        edt['Approved2'] = ""
+        edt['Code'] = ""
+        edt['Weight'] = ''
+        edt['DrawingNumber'] = datetime.datetime.now().ctime()
+        edt['Revision'] = "A"
+        template.EditableTexts = edt
+        page1 = doc.addObject('TechDraw::DrawPage','BatteryPocketPattern')
+        page1.Template = template
+        edt = page1.Template.EditableTexts
+        edt['DrawingTitle3']= ""
+        edt['Scale'] = '1'
+        edt['Sheet'] = "Sheet 1 of 1"
+        page1.Template.EditableTexts = edt
+        page1.ViewObject.show()
+        pattern = doc.addObject('TechDraw::DrawViewPart','Pattern')
+        page1.addView(pattern)
+        pattern.Source = doc.findObjects(Type="Part::Feature")
+        pattern.Scale = 1
+        pattern.Rotation=90
+        pattern.Direction=Base.Vector(0.0, 0.0, 1.0)
+        pattern.X = 120
+        pattern.Y = 130
+        doc.recompute()
+        sleep(500)
+        TechDrawGui.exportPageAsPdf(page1,filename)
+
+if __name__ == '__main__':
+    if "BatteryPocketPattern" in App.listDocuments().keys():
+        App.closeDocument("BatteryPocketPattern")
+    doc = App.newDocument("BatteryPocketPattern")
+    doc = App.activeDocument()
+    pattern = BatteryPocketPattern()
+    pattern.show()
+    Gui.activeDocument().activeView().viewTop()
+    Gui.SendMsgToActiveView("ViewFit")
+    pattern.techDrawPDF()
