@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Sun May 18 09:32:05 2025
-#  Last Modified : <250518.0940>
+#  Last Modified : <250518.1707>
 #
 #  Description	
 #
@@ -51,7 +51,7 @@ import time
 NeoPixelPIN = board.D1
 NUMPIXELS = 4
 pixels = neopixel.NeoPixel(NeoPixelPIN, NUMPIXELS)
-# turn both pixels off
+# turn all pixels off
 pixels.fill((0, 0, 0))
     
 # Forever loop
