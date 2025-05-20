@@ -8,7 +8,7 @@
 %  Author        : $Author$
 %  Created By    : Robert Heller
 %  Created       : Mon Apr 7 08:03:44 2025
-%  Last Modified : <250409.1500>
+%  Last Modified : <250520.0847>
 %
 %  Description 
 %
@@ -86,7 +86,7 @@ years.
 
 \section{What we will be making}
 
-We will be creating a light up embroidering piece.  We will use a small, 
+We will be creating a light up embroidery piece.  We will use a small, 
 sew-able microprocessor with some sew-able lighting devices.
 
 \part{Materials and Tools}
@@ -471,7 +471,7 @@ railroad crossing.  When the flap is unsnapped and down the lights stay off.
 The code is broken up into sections, with a blank line between each section.
 Each section starts with a comment line. This is a line starting with a hash
 character (\texttt{\#}). These lines are ignored by the Python processor -- they
-are meant for people reading the code to get a bettering understanding of what
+are meant for people reading the code to get a better understanding of what
 the code is meant to do.
 
 The first part of the code (lines 1-5) load in library code, specificly:
@@ -499,7 +499,7 @@ Finally, in lines 21-35 is the main loop. This is a ``forever'' loop, since
 \texttt{True} is always true. The code in the body of the loop, lines 23-35
 are executed repeatedly so long as power is applied.
 
-The loop body starts but turning all of the pixels in the pixel buffer off
+The loop body starts by turning all of the pixels in the pixel buffer off
 (line 24). Then the snap switch is tested, if the snap switch is closed
 (tested in line 26). If the switch is closed, the pixel indexed as
 \texttt{LitPixel} is set to full red, then the \texttt{LitPixel} is switched
