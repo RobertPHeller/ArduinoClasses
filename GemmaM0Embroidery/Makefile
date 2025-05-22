@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Robert Heller
 #  Created       : Wed Apr 2 14:10:16 2025
-#  Last Modified : <250409.1506>
+#  Last Modified : <250522.1102>
 #
 #  Description	
 #
@@ -72,3 +72,9 @@ ClassNotes.d: ImageDeps.tcl ClassNotes.tex
 	echo "" >> ClassNotes.d
 	
 -include ClassNotes.d
+
+%.png: %.jpg
+	convert $< $@
+
+ClearNailPolish.png: ClearNailPolish.jpeg
+	convert $< $@
